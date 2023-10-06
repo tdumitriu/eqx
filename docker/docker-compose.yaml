@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  eqx:
+    container_name: eqx
+    hostname: eqx
+    user: eqx
+    stdin_open: true
+    tty: true
+    build:
+      context: ..
+      args:
+        TVD_SSL_PASSWORD: changeme
+    ports:
+      - "8383:8383"

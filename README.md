@@ -1,2 +1,1 @@
-# eqx
-Solve equations
+### EQX
