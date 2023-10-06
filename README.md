@@ -1,0 +1,2 @@
+# eqx
+Solve equations
