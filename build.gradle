@@ -1,9 +1,11 @@
-plugins {
-    id 'com.bmuschko.docker-remote-api' version '8.1.0'
-}
-
 import com.bmuschko.gradle.docker.tasks.container.*
 import com.bmuschko.gradle.docker.tasks.image.*
+
+plugins {
+    id 'com.bmuschko.docker-remote-api' version '8.1.0'
+    id 'scala'
+    id 'application'
+}
 
 description = 'A eqx application'
 group = 'com.tvd.eqx'
@@ -12,13 +14,13 @@ version = theVersion
 // Verify the user has a Gradle version capable of the build.
 assert gradle.gradleVersion >= '8.1', 'This Build only works with Gradle Version 8.1 or above'
 
-apply plugin: 'scala'
-apply plugin: 'application'
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+}
 
-sourceCompatibility = 20
-targetCompatibility = 20
-
-mainClassName = "com.tvd.eqx.WebServer"
+application {
+    mainClass.set("com.tvd.eqx.WebServer")
+}
 
 repositories {
     mavenCentral()
