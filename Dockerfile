@@ -2,11 +2,7 @@ FROM alpine
 
 RUN apk update && \
     apk upgrade && \
-    apk add openjdk11
-
-RUN apk update && \
-    apk upgrade && \
-    apk add bash less curl jq
+    apk add openjdk11 bash less curl jq
 
 ARG TVD_SSL_PASSWORD=eqx_proto_1fax_?
 ARG APP_HOME=/opt/app
@@ -38,4 +34,4 @@ RUN mv eqx* eqx
 WORKDIR $APP_HOME/eqx
 EXPOSE 8383
 
-ENTRYPOINT ['bash', '-c', 'bin/eqx']
+ENTRYPOINT ["/bin/bash", "-c", "bin/eqx"]
