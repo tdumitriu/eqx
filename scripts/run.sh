@@ -1,3 +1,6 @@
 #!/bin/bash
 
-docker run -dt -p 8383:8383 --entrypoint=bash --name eqx eqx:1.0.0
+# shellcheck disable=SC2046
+source $(pwd)/scripts/env.sh
+
+docker run -dt -p 8383:8383 --name eqx "${IMAGE_PREFIX}"/"${IMAGE_NAME}":"${IMAGE_VERSION}"
