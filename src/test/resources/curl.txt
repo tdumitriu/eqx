@@ -13,10 +13,10 @@ TVD_KEYSTORE=src/main/resources/keystore.p12 TVD_SSL_PASSWORD=eqx_proto_1fax_? .
 
 CURL commands
 -------------
-curl -k https://localhost:8383/eqx/ping
+curl -k https://localhost:8383/eqx/status
 
-curl -k https://localhost:8383/eqx/healthcheck/db
-curl -k https://localhost:8383/eqx/healthcheck/mem
+curl -k https://localhost:8383/eqx/health/db
+curl -k https://localhost:8383/eqx/health/mem
 
 curl -k https://localhost:8383/eqx/log\?path=com.tvd.eqx.WebServer
 curl -k -X POST https://localhost:8383/eqx/log\?level=DEBUG\&path=com.tvd.eqx.WebServer

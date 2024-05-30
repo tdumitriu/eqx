@@ -21,25 +21,25 @@ class ServiceRoutesSpec extends AnyWordSpec with Matchers with ScalatestRouteTes
 
   "The main routing service" should {
 
-    // PING
-    "return a pong for GET ping request" in {
-      Get("/eqx/ping") ~> Route.seal(serviceRoutes) ~> check {
+    // STATUS
+    "return an up status for GET status request" in {
+      Get("/eqx/status") ~> Route.seal(serviceRoutes) ~> check {
         status shouldEqual StatusCodes.OK
-        contentType should === (ContentTypes.`text/plain(UTF-8)`)
-        entityAs[String] should === ("""pong""")
+        contentType should === (ContentTypes.`application/json`)
+        entityAs[String] should === ("""{"status":"up"}""")
         headers shouldEqual List()
       }
     }
 
-    "return a MethodNotAllowed error for PUT ping requests where PUT is not implemented" in {
-      Put("/eqx/ping") ~> Route.seal(serviceRoutes) ~> check {
+    "return a MethodNotAllowed error for PUT status requests where PUT is not implemented" in {
+      Put("/eqx/status") ~> Route.seal(serviceRoutes) ~> check {
         status shouldEqual StatusCodes.MethodNotAllowed
       }
     }
 
     // HEALTHCHECK
     "return for GET healthcheck request for database status" in {
-      Get("/eqx/healthcheck/db") ~> Route.seal(serviceRoutes) ~> check {
+      Get("/eqx/health/db") ~> Route.seal(serviceRoutes) ~> check {
         status shouldEqual StatusCodes.OK
         contentType should === (ContentTypes.`application/json`)
         entityAs[String] should === ("""{"component":"postgres","status":"ok","description":"600 max connections"}""")
@@ -48,7 +48,7 @@ class ServiceRoutesSpec extends AnyWordSpec with Matchers with ScalatestRouteTes
     }
 
     "return for GET healthcheck request for memory status" in {
-      Get("/eqx/healthcheck/mem") ~> Route.seal(serviceRoutes) ~> check {
+      Get("/eqx/health/mem") ~> Route.seal(serviceRoutes) ~> check {
         status shouldEqual StatusCodes.OK
         contentType should === (ContentTypes.`application/json`)
         entityAs[String] contains """{"component":"memory","status":"ok","description":"""

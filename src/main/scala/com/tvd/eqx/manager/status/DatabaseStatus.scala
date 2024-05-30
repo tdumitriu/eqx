@@ -11,9 +11,9 @@ class DatabaseStatus extends Logger {
 
     val component = "postgres"
     val status = Ok
-    val description = "600 max connections"
+    val details = "600 max connections"
 
-    SystemStatus(component, status, description)
+    SystemStatus(component, status, details)
   }
 }
 

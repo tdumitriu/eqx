@@ -1,10 +1,10 @@
 package com.tvd.eqx
 
-import akka.http.scaladsl.model.{HttpResponse, IllegalUriException, StatusCodes}
+import akka.http.scaladsl.model.{HttpResponse, StatusCodes}
 import akka.http.scaladsl.server._
 import akka.http.scaladsl.server.directives.RouteDirectives.complete
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.scala.{ClassTagExtensions, DefaultScalaModule, ScalaObjectMapper}
+import com.fasterxml.jackson.module.scala.{ClassTagExtensions, DefaultScalaModule}
 
 package object service {
 

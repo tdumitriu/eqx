@@ -2,7 +2,7 @@ package com.tvd.eqx.manager
 
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity}
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.scala.{ClassTagExtensions, DefaultScalaModule, ScalaObjectMapper}
+import com.fasterxml.jackson.module.scala.{ClassTagExtensions, DefaultScalaModule}
 import com.tvd.eqx.Constant.Basic.{NA, Unknown}
 import com.tvd.eqx.Constant.RoutePath.{Database, Memory}
 import com.tvd.eqx.Logger

@@ -1,8 +1,8 @@
 package com.tvd.eqx.manager.status
 
-import com.tvd.eqx.Constant.Basic.{Ok, Low}
+import com.tvd.eqx.Constant.Basic.{Low, Ok}
 import com.tvd.eqx.Logger
-import com.tvd.eqx.model.SystemStatus
+import com.tvd.eqx.model.{Memory, SystemStatus}
 
 object LocalSystemStatus extends Logger {
 
@@ -22,13 +22,9 @@ object LocalSystemStatus extends Logger {
     val max = runtime.maxMemory / Mb
     val freeMemPercentage = (free * 100) / total
 
-    val description = "Used:[" + used + "]," +
-                      "Free:[" + free + "]," +
-                      "Total:[" + total + "]," +
-                      "Max:[" + max + "]"
-
+    val details = Memory(total, used, free, max)
     val status = if(freeMemPercentage > MinimumFreeMemPercentage) Ok else Low
 
-    SystemStatus(component, status, description)
+    SystemStatus(component, status, details)
   }
 }

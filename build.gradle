@@ -128,7 +128,7 @@ task runTests(type: DockerExecContainer) {
     finalizedBy removeContainer
     targetContainerId startContainer.getContainerId()
 
-    withCommand(['/bin/bash', '-c', 'curl -v http://localhost:8383/eqx/ping'])
+    withCommand(['/bin/bash', '-c', 'curl -v http://localhost:8383/eqx/status'])
     withCommand(['echo', 'Hello World Two'])
     withCommand(['echo', 'Hello World Three'])
 

@@ -1,9 +1,6 @@
 package com.tvd.eqx.dal
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import com.tvd.eqx.model.{Message, User}
-import com.tvd.eqx.dal.UserComponent
-
 import slick.lifted.{ForeignKeyQuery, ProvenShape}
 
 trait MessageComponent { this: ProfileComponent with UserComponent =>

@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Image build
 # shellcheck disable=SC2034
 EQX_HOME="."
 IMAGE_PREFIX="tdumitriu"
@@ -12,3 +13,7 @@ REMOTE_PATH="images"
 REMOTE_HOME="/home/ubuntu"
 DOCKERFILE_PATH="."
 CONTAINER_NAME="eqx"
+
+# Environment
+HOSTNAME=localhost
+PORT=8383

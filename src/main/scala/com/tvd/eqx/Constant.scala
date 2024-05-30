@@ -24,8 +24,8 @@ object Constant {
   }
 
   object RoutePath {
-    final val Ping = "ping"
-    final val Healthcheck = "healthcheck"
+    final val Status = "status"
+    final val Health = "health"
     final val Log = "log"
     final val Level = "level"
     final val Grade = "grade"

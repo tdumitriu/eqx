@@ -1,12 +1,6 @@
 package com.tvd.eqx.dal
 
-import com.tvd.eqx.model.User
-import slick.dbio.DBIO
 import slick.jdbc.JdbcBackend.Database
-import slick.lifted.TableQuery
-
-import scala.concurrent.Await
-import scala.concurrent.duration._
 
 object DBHandler {
 

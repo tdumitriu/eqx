@@ -1,7 +1,6 @@
 package com.tvd.eqx.service
 
 import akka.actor.{ActorRef, ActorSystem, Props}
-import akka.dispatch.MessageDispatcher
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
@@ -12,19 +11,18 @@ import akka.pattern.ask
 import akka.util.Timeout
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.tvd.eqx.Constant.Basic.PathPrefix
-import com.tvd.eqx.Constant.Http
-import com.tvd.eqx.Constant.RoutePath
+import com.tvd.eqx.Constant.{Http, RoutePath}
 import com.tvd.eqx.Logger
 import com.tvd.eqx.manager.UserManager.ActionPerformed
-import com.tvd.eqx.manager.{HealthcheckManager, JsonService, PingManager}
+import com.tvd.eqx.manager.{HealthcheckManager, JsonService, StatusManager}
 import com.tvd.eqx.model.{SystemStatus, User, Users}
 import com.tvd.eqx.service.ServiceHealthcheckActor.GetSystemStatus
 import com.tvd.eqx.service.ServiceLogLevelActor.{GetLogLevel, SetLogLevel}
 import com.tvd.eqx.service.ServiceUserActor._
 import com.typesafe.config.{Config, ConfigFactory}
 
-import scala.concurrent.{Await, Future}
 import scala.concurrent.duration._
+import scala.concurrent.{Await, Future}
 
 trait ServiceRoutes extends Logger {
 
@@ -44,14 +42,14 @@ trait ServiceRoutes extends Logger {
   lazy val serviceRoutes: Route =
     pathPrefix(PathPrefix) {
       concat(
-        path(RoutePath.Ping) {
+        path(RoutePath.Status) {
           get {
             complete {
-              PingManager.response()
+              StatusManager.response()
             }
           }
         },
-        path(RoutePath.Healthcheck / Segment) { component: String =>
+        path(RoutePath.Health / Segment) { component: String =>
           get {
             withRequestTimeout(100.seconds) {
               val systemStatus: Future[SystemStatus] = (statusActor ? GetSystemStatus(component)).mapTo[SystemStatus]
