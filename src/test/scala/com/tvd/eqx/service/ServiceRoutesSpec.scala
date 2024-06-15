@@ -42,7 +42,7 @@ class ServiceRoutesSpec extends AnyWordSpec with Matchers with ScalatestRouteTes
       Get("/eqx/health/db") ~> Route.seal(serviceRoutes) ~> check {
         status shouldEqual StatusCodes.OK
         contentType should === (ContentTypes.`application/json`)
-        entityAs[String] should === ("""{"component":"postgres","status":"ok","description":"600 max connections"}""")
+        entityAs[String] should === ("""{"component":"postgres","status":"ok","details":"600 max connections"}""")
         headers shouldEqual List()
       }
     }

@@ -38,15 +38,19 @@ ssh "${EC2_USERNAME}"@"${EC2_INSTANCE_IP}" << EOF
     else
         echo "Cloning repository ${REPO_GIT}..."
         git clone "${REPO_GIT}" "${REPO_DIR}"
+        cd "${REPO_DIR}"
     fi
 
     echo " "
     echo "The git repo has been refreshed"
     echo " "
-#    echo "Building the new [${IMAGE_ABSOLUTE_NAME}] image"
-#    echo " "
-#
-#    # Stop and remove existing [${CONTAINER_NAME}] container if running
+    echo "Building the new [${IMAGE_ABSOLUTE_NAME}] image"
+    echo " "
+
+    ./gradlew build
+    sudo ./scripts/build.sh && sudo ./scripts/run.sh
+
+    # Stop and remove existing [${CONTAINER_NAME}] container if running
 #    echo "Stop and remove existing [${CONTAINER_NAME}] container if running"
 #    if sudo docker ps -a --format '{{.Names}}' | grep -E "^$CONTAINER_NAME$"; then
 #        sudo docker stop "${CONTAINER_NAME}"
