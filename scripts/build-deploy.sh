@@ -12,12 +12,10 @@ ssh "${EC2_USERNAME}"@"${EC2_INSTANCE_IP}" << EOF
     mkdir -p "${REMOTE_BUILD_DIST_PATH}"
 
     if [[ -d "${REMOTE_BUILD_DIST_PATH}" ]]; then
-        echo "Build distributions folder already exists. Moving on ..."
+        echo "The build distributions folder is ready"
     else
         echo "Error: Build distributions folder couldn't be created..."
     fi
-
-    echo "Done"
     echo "---------------------------------------"
     echo " "
 EOF
@@ -33,8 +31,10 @@ ssh "${EC2_USERNAME}"@"${EC2_INSTANCE_IP}" << EOF
     echo "Remote deployment procedure "
     echo "---------------------------------------"
 
-    sudo ./scripts/build.sh && sudo ./scripts/run.sh
+    cd eqx && sudo ./scripts/build.sh && sudo ./scripts/run.sh
 
+    echo "Testing status ..."
+    curl -ks https://localhost:8383/eqx/status | jq '.'
     echo "Done"
     echo "---------------------------------------"
     echo " "
