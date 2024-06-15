@@ -4,9 +4,6 @@
 source $(pwd)/scripts/env.sh
 
 # Set variables
-
-LOCAL_IMAGE_TAR="./${HOME_EQX}/${IMAGE_PATH}/${IMAGE_NAME}.tar"
-REMOTE_IMAGE_TAR="${REMOTE_PATH}/${IMAGE_NAME}.tar"
 IMAGE_ABSOLUTE_NAME="${IMAGE_PREFIX}/${IMAGE_NAME}:${IMAGE_VERSION}"
 REPO_GIT="git@github.com:tdumitriu/eqx.git"
 REPO_DIR="eqx"

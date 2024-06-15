@@ -17,6 +17,8 @@ HOME_BUILD=build
 LOCAL_BUILD_DIST="./${HOME_BUILD}/distributions/eqx-0.1.tar"
 REMOTE_BUILD_DIST_PATH="eqx/build/distributions"
 REMOTE_BUILD_DIST_TAR="${REMOTE_BUILD_DIST_PATH}/eqx-0.1.tar"
+LOCAL_DOCKERFILE="./Dockerfile"
+REMOTE_DOCKERFILE="eqx/Dockerfile"
 
 # Environment
 HOSTNAME=localhost

@@ -3,6 +3,7 @@
 # shellcheck disable=SC2046
 source $(pwd)/scripts/env.sh
 
+echo "Preparing build distributions environment..."
 ssh "${EC2_USERNAME}"@"${EC2_INSTANCE_IP}" << EOF
     echo " "
     echo "---------------------------------------"
@@ -22,8 +23,8 @@ EOF
 
 echo "Copying distribution tar to EC2 instance..."
 scp "${LOCAL_BUILD_DIST}" "${EC2_USERNAME}"@"${EC2_INSTANCE_IP}":~/"${REMOTE_BUILD_DIST_TAR}"
+scp "${LOCAL_DOCKERFILE}" "${EC2_USERNAME}"@"${EC2_INSTANCE_IP}":~/"${REMOTE_DOCKERFILE}"
 
-# SSH into EC2 instance and load Docker image
 echo "SSHing into EC2 instance and deploying the new docker image..."
 ssh "${EC2_USERNAME}"@"${EC2_INSTANCE_IP}" << EOF
     echo " "
@@ -31,7 +32,23 @@ ssh "${EC2_USERNAME}"@"${EC2_INSTANCE_IP}" << EOF
     echo "Remote deployment procedure "
     echo "---------------------------------------"
 
-    cd eqx && sudo ./scripts/build.sh && sudo ./scripts/run.sh
+    cd eqx
+
+    echo "Building [${IMAGE_PREFIX}/${IMAGE_NAME}:${IMAGE_VERSION}] image ..."
+    docker build -t "${IMAGE_PREFIX}"/"${IMAGE_NAME}":"${IMAGE_VERSION}" .
+    echo "Image [${IMAGE_PREFIX}/${IMAGE_NAME}:${IMAGE_VERSION}] has been built"
+
+    echo "Stop and remove existing [${CONTAINER_NAME}] container if running"
+    if sudo docker ps -a --format '{{.Names}}' | grep -E "^$CONTAINER_NAME$"; then
+        sudo docker stop "${CONTAINER_NAME}"
+        sudo docker rm "${CONTAINER_NAME}"
+        echo "Existing container ${CONTAINER_NAME} stopped and removed."
+    fi
+
+    # Run a new [${CONTAINER_NAME}] container from the updated [${IMAGE_ABSOLUTE_NAME}] image
+    echo "Run a new container from the updated image"
+    sudo docker run -dt -p 8383:8383 --name "${CONTAINER_NAME}" "${IMAGE_ABSOLUTE_NAME}"
+    echo "New container ${CONTAINER_NAME} running."
 
     echo "Testing status ..."
     curl -ks https://localhost:8383/eqx/status | jq '.'
