@@ -13,6 +13,9 @@ REMOTE_PATH="images"
 REMOTE_HOME="/home/ubuntu"
 DOCKERFILE_PATH="."
 CONTAINER_NAME="eqx"
+HOME_BUILD=build
+LOCAL_BUILD_DIST="./${HOME_BUILD}/distributions/eqx-0.1.tar"
+REMOTE_BUILD_DIST="build/distributions/eqx-0.1.tar"
 
 # Environment
 HOSTNAME=localhost
