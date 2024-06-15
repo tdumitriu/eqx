@@ -13,7 +13,7 @@ echo "Refresh EC2 git repo and redeploy the docker image ..."
 
 # SSH into EC2 instance and load Docker image
 echo "SSHing into EC2 instance and deploying the new docker image..."
-ssh "${EC2_USERNAME}"@"${EC2_INSTANCE_IP}" << EOF
+ssh "${EC2_USERNAME}"@"${EC2_INSTANCE_IP}" << 'EOF'
     echo " "
     echo "---------------------------------------"
     echo "Remote refresh deployment"
@@ -47,18 +47,6 @@ ssh "${EC2_USERNAME}"@"${EC2_INSTANCE_IP}" << EOF
     ./gradlew build
     sudo ./scripts/build.sh && sudo ./scripts/run.sh
 
-    # Stop and remove existing [${CONTAINER_NAME}] container if running
-#    echo "Stop and remove existing [${CONTAINER_NAME}] container if running"
-#    if sudo docker ps -a --format '{{.Names}}' | grep -E "^$CONTAINER_NAME$"; then
-#        sudo docker stop "${CONTAINER_NAME}"
-#        sudo docker rm "${CONTAINER_NAME}"
-#        echo "Existing container ${CONTAINER_NAME} stopped and removed."
-#    fi
-#
-#    # Run a new [${CONTAINER_NAME}] container from the updated [${IMAGE_ABSOLUTE_NAME}] image
-#    echo "Run a new container from the updated image"
-#    sudo docker run -dt -p 8383:8383 --name "${CONTAINER_NAME}" "${IMAGE_ABSOLUTE_NAME}"
-#    echo "New container ${CONTAINER_NAME} running."
     echo "Done"
     echo "---------------------------------------"
     echo " "

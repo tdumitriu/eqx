@@ -16,7 +16,7 @@ echo "Building the distribution ..."
 echo "The new distribution is ready at ${LOCAL_BUILD_DIST}"
 echo " "
 echo "Preparing build distributions environment..."
-ssh "${EC2_USERNAME}"@"${EC2_INSTANCE_IP}" << EOF
+ssh "${EC2_USERNAME}"@"${EC2_INSTANCE_IP}" << 'EOF'
     echo " "
     echo "Prepare build distributions environment"
 
@@ -35,7 +35,7 @@ scp "${LOCAL_BUILD_DIST}" "${EC2_USERNAME}"@"${EC2_INSTANCE_IP}":~/"${REMOTE_BUI
 scp "${LOCAL_DOCKERFILE}" "${EC2_USERNAME}"@"${EC2_INSTANCE_IP}":~/"${REMOTE_DOCKERFILE}"
 
 echo "SSHing into EC2 instance and deploying the new docker image..."
-ssh "${EC2_USERNAME}"@"${EC2_INSTANCE_IP}" << EOF
+ssh "${EC2_USERNAME}"@"${EC2_INSTANCE_IP}" << 'EOF'
     echo " "
     echo "Remote deployment procedure "
     cd eqx
