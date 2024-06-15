@@ -26,7 +26,7 @@ class ServiceRoutesSpec extends AnyWordSpec with Matchers with ScalatestRouteTes
       Get("/eqx/status") ~> Route.seal(serviceRoutes) ~> check {
         status shouldEqual StatusCodes.OK
         contentType should === (ContentTypes.`application/json`)
-        entityAs[String] should === ("""{"status":"up1"}""")
+        entityAs[String] should === ("""{"status":"up"}""")
         headers shouldEqual List()
       }
     }

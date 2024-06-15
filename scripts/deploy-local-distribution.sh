@@ -5,8 +5,10 @@ set -e  # Exit immediately if a command exits with a non-zero status
 # shellcheck disable=SC2046
 source $(pwd)/scripts/env.sh
 
+IMAGE_ABSOLUTE_NAME="${IMAGE_PREFIX}/${IMAGE_NAME}:${IMAGE_VERSION}"
+
 echo "------------------------------------------------------------"
-echo "|      Deploying the local built tar distribution          |"
+echo "| Deploying the local built tar distribution to remote EC2 |"
 echo "------------------------------------------------------------"
 
 echo "Building the distribution ..."
@@ -25,7 +27,6 @@ ssh "${EC2_USERNAME}"@"${EC2_INSTANCE_IP}" << EOF
     else
         echo "Error: Build distributions folder couldn't be created..."
     fi
-    echo "---------------------------------------"
     echo " "
 EOF
 
@@ -47,16 +48,15 @@ ssh "${EC2_USERNAME}"@"${EC2_INSTANCE_IP}" << EOF
     if sudo docker ps -a --format '{{.Names}}' | grep -E "^$CONTAINER_NAME$"; then
         sudo docker stop "${CONTAINER_NAME}"
         sudo docker rm "${CONTAINER_NAME}"
-        echo "Existing container ${CONTAINER_NAME} stopped and removed."
+        echo "Existing container [${CONTAINER_NAME}] stopped and removed."
+    else
+        echo "The [${CONTAINER_NAME}] container is not running"
     fi
 
-    # Run a new [${CONTAINER_NAME}] container from the updated [${IMAGE_ABSOLUTE_NAME}] image
-    echo "Run a new container from the updated image"
+    echo "Start the [${CONTAINER_NAME}] container from the updated [${IMAGE_ABSOLUTE_NAME}] image"
     sudo docker run -dt -p 8383:8383 --name "${CONTAINER_NAME}" "${IMAGE_ABSOLUTE_NAME}"
     echo "New container ${CONTAINER_NAME} running."
 
-    echo "Testing status ..."
-    curl -ks https://localhost:8383/eqx/status | jq '.'
     echo "Done"
     echo "---------------------------------------"
     echo " "
