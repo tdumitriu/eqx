@@ -3,12 +3,18 @@
 # shellcheck disable=SC2046
 source $(pwd)/scripts/env.sh
 
+echo "------------------------------------------------------------"
+echo "|      Deploying the local built tar distribution          |"
+echo "------------------------------------------------------------"
+
+echo "Building the distribution ..."
+./gradlew build
+echo "The new distribution is ready at ${LOCAL_BUILD_DIST}"
+echo " "
 echo "Preparing build distributions environment..."
 ssh "${EC2_USERNAME}"@"${EC2_INSTANCE_IP}" << EOF
     echo " "
-    echo "---------------------------------------"
     echo "Prepare build distributions environment"
-    echo "---------------------------------------"
 
     mkdir -p "${REMOTE_BUILD_DIST_PATH}"
 
@@ -28,14 +34,11 @@ scp "${LOCAL_DOCKERFILE}" "${EC2_USERNAME}"@"${EC2_INSTANCE_IP}":~/"${REMOTE_DOC
 echo "SSHing into EC2 instance and deploying the new docker image..."
 ssh "${EC2_USERNAME}"@"${EC2_INSTANCE_IP}" << EOF
     echo " "
-    echo "---------------------------------------"
     echo "Remote deployment procedure "
-    echo "---------------------------------------"
-
     cd eqx
 
     echo "Building [${IMAGE_PREFIX}/${IMAGE_NAME}:${IMAGE_VERSION}] image ..."
-    docker build -t "${IMAGE_PREFIX}"/"${IMAGE_NAME}":"${IMAGE_VERSION}" .
+    sudo docker build -t "${IMAGE_PREFIX}"/"${IMAGE_NAME}":"${IMAGE_VERSION}" .
     echo "Image [${IMAGE_PREFIX}/${IMAGE_NAME}:${IMAGE_VERSION}] has been built"
 
     echo "Stop and remove existing [${CONTAINER_NAME}] container if running"

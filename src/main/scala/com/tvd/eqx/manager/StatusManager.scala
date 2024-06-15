@@ -7,6 +7,6 @@ object StatusManager extends Logger {
 
   def response(): HttpEntity.Strict = {
     logger.debug("Processing the 'status' request")
-    HttpEntity(ContentTypes.`application/json`, """{"status":"up"}""")
+    HttpEntity(ContentTypes.`application/json`, """{"status":"up1"}""")
   }
 }
