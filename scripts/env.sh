@@ -21,5 +21,11 @@ LOCAL_DOCKERFILE="./Dockerfile"
 REMOTE_DOCKERFILE="eqx/Dockerfile"
 
 # Environment
+# Local
 HOSTNAME=localhost
 PORT=8383
+
+# Remote
+REMOTE_HOSTNAME=localhost
+INTERNAL_PORT=8383
+REMOTE_PORT=8383

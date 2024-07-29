@@ -125,6 +125,14 @@ trait ServiceRoutes extends Logger {
               }
             }
           )
+        },
+        path(RoutePath.Webpages) {
+          concat(
+            // GET (read) user by id
+            get {
+              getFromResource("resources/web/index.html")
+            }
+          )
         }
       )
     }

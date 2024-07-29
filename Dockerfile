@@ -31,6 +31,6 @@ RUN rm -rf eqx.tar
 RUN mv eqx* eqx
 
 WORKDIR $APP_HOME/eqx
-EXPOSE 8383
+EXPOSE 8383 80
 
 ENTRYPOINT [ "./bin/eqx" ]

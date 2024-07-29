@@ -16,7 +16,8 @@ echo "Building the distribution ..."
 echo "The new distribution is ready at ${LOCAL_BUILD_DIST}"
 echo " "
 echo "Preparing build distributions environment..."
-ssh "${EC2_USERNAME}"@"${EC2_INSTANCE_IP}" << 'EOF'
+# shellcheck disable=SC2087
+ssh "${EC2_USERNAME}"@"${EC2_INSTANCE_IP}" << EOF
     echo " "
     echo "Prepare build distributions environment"
 
@@ -35,7 +36,8 @@ scp "${LOCAL_BUILD_DIST}" "${EC2_USERNAME}"@"${EC2_INSTANCE_IP}":~/"${REMOTE_BUI
 scp "${LOCAL_DOCKERFILE}" "${EC2_USERNAME}"@"${EC2_INSTANCE_IP}":~/"${REMOTE_DOCKERFILE}"
 
 echo "SSHing into EC2 instance and deploying the new docker image..."
-ssh "${EC2_USERNAME}"@"${EC2_INSTANCE_IP}" << 'EOF'
+# shellcheck disable=SC2087
+ssh "${EC2_USERNAME}"@"${EC2_INSTANCE_IP}" << EOF
     echo " "
     echo "Remote deployment procedure "
     cd eqx
@@ -48,14 +50,19 @@ ssh "${EC2_USERNAME}"@"${EC2_INSTANCE_IP}" << 'EOF'
     if sudo docker ps -a --format '{{.Names}}' | grep -E "^$CONTAINER_NAME$"; then
         sudo docker stop "${CONTAINER_NAME}"
         sudo docker rm "${CONTAINER_NAME}"
-        echo "Existing container [${CONTAINER_NAME}] stopped and removed."
+        echo "Existing container [${CONTAINER_NAME}] has been stopped and has been removed."
     else
         echo "The [${CONTAINER_NAME}] container is not running"
     fi
 
     echo "Start the [${CONTAINER_NAME}] container from the updated [${IMAGE_ABSOLUTE_NAME}] image"
-    sudo docker run -dt -p 8383:8383 --name "${CONTAINER_NAME}" "${IMAGE_ABSOLUTE_NAME}"
-    echo "New container ${CONTAINER_NAME} running."
+    sudo docker run -dt -p ${REMOTE_PORT}:${INTERNAL_PORT} --name "${CONTAINER_NAME}" "${IMAGE_ABSOLUTE_NAME}"
+    echo "New container ${CONTAINER_NAME} is starting on port ${INTERNAL_PORT} exposed as ${REMOTE_PORT}..."
+
+    echo "Testing [${CONTAINER_NAME}]..."
+    echo "Executing curl -sk https://${REMOTE_HOSTNAME}:${REMOTE_PORT}/eqx/status | jq '.'"
+    echo "Response:"
+    curl -sk https://"${REMOTE_HOSTNAME}":${REMOTE_PORT}/eqx/status | jq '.'
 
     echo "Done"
     echo "---------------------------------------"

@@ -32,6 +32,7 @@ object Constant {
     final val Database = "db"
     final val Memory = "mem"
     final val User = "user"
+    final val Webpages = "doc"
   }
 
   object Logger {

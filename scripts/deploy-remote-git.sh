@@ -13,7 +13,8 @@ echo "Refresh EC2 git repo and redeploy the docker image ..."
 
 # SSH into EC2 instance and load Docker image
 echo "SSHing into EC2 instance and deploying the new docker image..."
-ssh "${EC2_USERNAME}"@"${EC2_INSTANCE_IP}" << 'EOF'
+# shellcheck disable=SC2087
+ssh "${EC2_USERNAME}"@"${EC2_INSTANCE_IP}" << EOF
     echo " "
     echo "---------------------------------------"
     echo "Remote refresh deployment"
