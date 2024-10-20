@@ -5,6 +5,25 @@ set -e  # Exit immediately if a command exits with a non-zero status
 # shellcheck disable=SC2046
 source $(pwd)/scripts/env.sh
 
+retry() {
+    local -r -i max_attempts="$1"; shift
+    local -i waiting_time=2
+    local -i attempt_num=1
+    echo "Attempting to execute '${@}' for '${max_attempts}' times, waiting ${waiting_time} seconds between calls"
+    until "$@"
+    do
+        if ((attempt_num==max_attempts))
+        then
+            echo "Attempt ${attempt_num}/${max_attempts} failed and there are no more attempts left!"
+            return 0
+        else
+            echo "Attempt ${attempt_num}/${max_attempts} failed! Trying again in ${waiting_time} seconds..."
+            sleep ${waiting_time}
+            attempt_num=$(( attempt_num + 1 ))
+        fi
+    done
+}
+
 IMAGE_ABSOLUTE_NAME="${IMAGE_PREFIX}/${IMAGE_NAME}:${IMAGE_VERSION}"
 
 echo "------------------------------------------------------------"
@@ -59,14 +78,13 @@ ssh "${EC2_USERNAME}"@"${EC2_INSTANCE_IP}" << EOF
     sudo docker run -dt -p ${REMOTE_PORT}:${INTERNAL_PORT} --name "${CONTAINER_NAME}" "${IMAGE_ABSOLUTE_NAME}"
     echo "New container ${CONTAINER_NAME} is starting on port ${INTERNAL_PORT} exposed as ${REMOTE_PORT}..."
 
-    echo "Testing [${CONTAINER_NAME}]..."
-    echo "Executing curl -sk https://${REMOTE_HOSTNAME}:${REMOTE_PORT}/eqx/status | jq '.'"
-    echo "Response:"
-    curl -sk https://"${REMOTE_HOSTNAME}":${REMOTE_PORT}/eqx/status | jq '.'
-
+    echo " "
     echo "Done"
     echo "---------------------------------------"
     echo " "
 EOF
 
+echo "Remote testing [${CONTAINER_NAME}]..."
+retry 10 curl -sk https://"${EC2_INSTANCE_IP}":"${REMOTE_PORT}"/eqx/status
+echo " "
 echo "Docker image uploaded, tagged, and container replaced on EC2 instance."
