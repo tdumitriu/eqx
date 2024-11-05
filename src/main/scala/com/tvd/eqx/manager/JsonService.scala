@@ -13,7 +13,7 @@ import scala.concurrent.ExecutionContext
 
 package object JsonService {
 
-  val objectMapper: ObjectMapper = new ObjectMapper()
+  private val objectMapper: ObjectMapper = new ObjectMapper()
     .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
     .setSerializationInclusion(Include.NON_EMPTY)
     .setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
