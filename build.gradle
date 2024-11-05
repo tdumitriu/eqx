@@ -2,7 +2,7 @@ import com.bmuschko.gradle.docker.tasks.container.*
 import com.bmuschko.gradle.docker.tasks.image.*
 
 plugins {
-    id 'com.bmuschko.docker-remote-api' version '8.1.0'
+    id 'com.bmuschko.docker-remote-api' version '9.4.0'
     id 'scala'
     id 'application'
     id 'distribution'
@@ -16,7 +16,7 @@ version = theVersion
 assert gradle.gradleVersion >= '8.1', 'This Build only works with Gradle Version 8.1 or above'
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_21
+    sourceCompatibility = JavaVersion.VERSION_23
 }
 
 application {
@@ -28,18 +28,17 @@ repositories {
 }
 
 ext {
-    scalaVersion         = '2.13.11'
-    akkaVersion          = '2.8.2'
-    akkaHttpVersion      = '10.5.2'
-    logbackVersion       = '1.4.8'
-    sslAkkaVersion       = '0.2.2'
-    configVersion        = '1.4.2'
-    slickVersion         = '3.4.1'
+    scalaVersion         = '3.6.1'
+    akkaVersion          = '2.8.7'
+    akkaHttpVersion      = '10.5.3'
+    logbackVersion       = '1.5.11'
+    configVersion        = '1.4.3'
+    slickVersion         = '3.5.2'
+    seleniumVersion      = '4.25.0'
 
-    junitVersion         = '4.12'
-    scalatestVersion     = '3.3.0-SNAP3'
-    scalamockVersion     = '5.2.0'
-    scalatestplusVersion = '3.2.14.0'
+    scalatestVersion     = '3.2.19'
+    scalamockVersion     = '6.0.0'
+    scalatestplusVersion = '3.2.19.0'
 }
 
 configurations {
@@ -47,51 +46,51 @@ configurations {
 }
 
 dependencies {
-    implementation group: 'org.scala-lang',         name: 'scala-library',                   version: scalaVersion
-    implementation group: 'com.typesafe.akka',      name: 'akka-actor_2.13',                 version: akkaVersion
-    implementation group: 'com.typesafe.akka',      name: 'akka-stream_2.13',                version: akkaVersion
-    implementation group: 'com.typesafe.akka',      name: 'akka-http_2.13',                  version: akkaHttpVersion
-    implementation group: 'com.typesafe.akka',      name: 'akka-serialization-jackson_2.13', version: akkaVersion
+    implementation group: 'org.scala-lang',         name: 'scala3-library_3',             version: scalaVersion
+    implementation group: 'com.typesafe.akka',      name: 'akka-actor_3',                 version: akkaVersion
+    implementation group: 'com.typesafe.akka',      name: 'akka-stream_3',                version: akkaVersion
+    implementation group: 'com.typesafe.akka',      name: 'akka-http_3',                  version: akkaHttpVersion
+    implementation group: 'com.typesafe.akka',      name: 'akka-serialization-jackson_3', version: akkaVersion
 
-    implementation group: 'com.typesafe',           name: 'config',                          version: configVersion
-    implementation group: 'com.typesafe.akka',      name: 'akka-slf4j_2.13',                 version: akkaVersion
-    implementation group: 'ch.qos.logback',         name: 'logback-classic',                 version: logbackVersion
+    implementation group: 'com.typesafe',           name: 'config',                       version: configVersion
+    implementation group: 'com.typesafe.akka',      name: 'akka-slf4j_3',                 version: akkaVersion
+    implementation group: 'ch.qos.logback',         name: 'logback-classic',              version: logbackVersion
 
-    implementation group: 'com.typesafe.slick',     name: 'slick_2.13' ,                     version: slickVersion
-    implementation group: 'org.seleniumhq.selenium',name: 'selenium-java',                   version: '4.10.0'
+    implementation group: 'com.typesafe.slick',     name: 'slick_3' ,                     version: slickVersion
+    implementation group: 'org.seleniumhq.selenium',name: 'selenium-java',                version: seleniumVersion
 
-    testImplementation group: 'org.scalamock',      name: 'scalamock_2.13',                  version: scalamockVersion
-    testImplementation group: 'org.scalatestplus',  name: 'junit-4-13_2.13',                 version: scalatestplusVersion
-    testImplementation group: 'org.scalatest',      name: 'scalatest_2.13',                  version: scalatestVersion
-    testImplementation group: 'com.typesafe.akka',  name: 'akka-testkit_2.13',               version: akkaVersion
-    testImplementation group: 'com.typesafe.akka',  name: 'akka-stream-testkit_2.13',        version: akkaVersion
-    testImplementation group: 'com.typesafe.akka',  name: 'akka-http-testkit_2.13',          version: akkaHttpVersion
+    testImplementation group: 'org.scalamock',      name: 'scalamock_3',                  version: scalamockVersion
+    testImplementation group: 'org.scalatestplus',  name: 'junit-4-13_3',                 version: scalatestplusVersion
+    testImplementation group: 'org.scalatest',      name: 'scalatest_3',                  version: scalatestVersion
+    testImplementation group: 'com.typesafe.akka',  name: 'akka-testkit_3',               version: akkaVersion
+    testImplementation group: 'com.typesafe.akka',  name: 'akka-stream-testkit_3',        version: akkaVersion
+    testImplementation group: 'com.typesafe.akka',  name: 'akka-http-testkit_3',          version: akkaHttpVersion
 }
 
-task buildImage(type: DockerBuildImage) {
+tasks.register('buildImage', DockerBuildImage) {
     dependsOn build
     inputDir.set(file('Dockerfile').parentFile)
     images.add("eqx:${theVersion}")
 }
 
-task createContainer(type: DockerCreateContainer) {
+tasks.register('createContainer', DockerCreateContainer) {
     dependsOn buildImage
     targetImageId buildImage.getImageId()
 
     hostConfig.portBindings.set(['8383:8383'])
     hostConfig.autoRemove.set(false)
-    exposedPorts.add(new DockerCreateContainer.ExposedPort("tcp",[8383]))
+    exposedPorts.add(new DockerCreateContainer.ExposedPort("tcp", [8383]))
     containerName.set('eqx')
     tty.set(true)
     entrypoint.set(['bash', '-c', 'bin/eqx'])
 }
 
-task startContainer(type: DockerStartContainer) {
+tasks.register('startContainer', DockerStartContainer) {
     dependsOn createContainer
     targetContainerId createContainer.getContainerId()
 }
 
-task logContainer(type: DockerLogsContainer) {
+tasks.register('logContainer', DockerLogsContainer) {
     dependsOn startContainer
     targetContainerId startContainer.getContainerId()
 
@@ -102,12 +101,12 @@ task logContainer(type: DockerLogsContainer) {
     }
 }
 
-task stopContainer(type: DockerStopContainer) {
+tasks.register('stopContainer', DockerStopContainer) {
     dependsOn startContainer
     targetContainerId startContainer.getContainerId()
 }
 
-task removeContainer(type: DockerRemoveContainer) {
+tasks.register('removeContainer', DockerRemoveContainer) {
     dependsOn stopContainer
     targetContainerId stopContainer.getContainerId()
 
@@ -124,7 +123,7 @@ task removeContainer(type: DockerRemoveContainer) {
     }
 }
 
-task runTests(type: DockerExecContainer) {
+tasks.register('runTests', DockerExecContainer) {
     dependsOn startContainer
     finalizedBy removeContainer
     targetContainerId startContainer.getContainerId()

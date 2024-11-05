@@ -6,19 +6,20 @@ import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.Route
 import com.tvd.eqx.Constant.ActorSystem.Name
 import com.tvd.eqx.Constant.Basic.PathPrefix
-import com.tvd.eqx.Constant.Http._
+import com.tvd.eqx.Constant.Http.*
 import com.tvd.eqx.security.HttpsConnection
 import com.tvd.eqx.service.ServiceRoutes
 import com.typesafe.config.{Config, ConfigFactory}
 
+import scala.compiletime.uninitialized
 import scala.concurrent.duration.DurationInt
 import scala.concurrent.{ExecutionContextExecutor, Future}
 
 object WebServer extends ServiceRoutes with Logger with HttpsConnection {
 
-  val ProtocolHttps: String = "https"
+  private val ProtocolHttps: String = "https"
 
-  var binding: Future[Http.ServerBinding] = _
+  private var binding: Future[Http.ServerBinding] = uninitialized
 
   override implicit def system: ActorSystem = ActorSystem(Name)
 

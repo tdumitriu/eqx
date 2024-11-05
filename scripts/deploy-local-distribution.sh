@@ -9,6 +9,7 @@ retry() {
     local -r -i max_attempts="$1"; shift
     local -i waiting_time=2
     local -i attempt_num=1
+    # shellcheck disable=SC2145
     echo "Attempting to execute '${@}' for '${max_attempts}' times, waiting ${waiting_time} seconds between calls"
     until "$@"
     do

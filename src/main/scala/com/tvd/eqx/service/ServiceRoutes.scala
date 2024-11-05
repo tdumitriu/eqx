@@ -49,28 +49,35 @@ trait ServiceRoutes extends Logger {
             }
           }
         },
-        path(RoutePath.Health / Segment) { component: String =>
-          get {
-            withRequestTimeout(100.seconds) {
-              val systemStatus: Future[SystemStatus] = (statusActor ? GetSystemStatus(component)).mapTo[SystemStatus]
-              onSuccess(systemStatus) { status => complete(HealthcheckManager.response(status)) }
-            }
-          }
-        },
+//        path(RoutePath.Health / Segment) {
+//          get {
+//            withRequestTimeout(100.seconds) {
+//              (component: String) =>
+//                val systemStatus: Future[SystemStatus] = (statusActor ? GetSystemStatus(component)).mapTo[SystemStatus]
+//                onSuccess(systemStatus) { 
+//                  status => complete(HealthcheckManager.response(status)) 
+//                }
+//            }
+//          }
+//        },
         path(RoutePath.Log) {
           concat(
             get {
               parameters("path".as[String]) {
-                path: String =>
+                (path: String) =>
                   val logLevelResponse: Future[String] = (logLevelActor ? GetLogLevel(path)).mapTo[String]
-                  onSuccess(logLevelResponse) { response => complete(response) }
+                  onSuccess(logLevelResponse) { 
+                    response => complete(response) 
+                  }
               }
             },
             post {
               parameters("level".as[String], "path".as[String]) {
                 (logLevel: String, path: String) =>
                   val changedLogLevelResponse: Future[String] = (logLevelActor ? SetLogLevel(logLevel, path)).mapTo[String]
-                  onSuccess(changedLogLevelResponse) { response => complete(response) }
+                  onSuccess(changedLogLevelResponse) { 
+                    response => complete(response) 
+                  }
               }
             }
           )

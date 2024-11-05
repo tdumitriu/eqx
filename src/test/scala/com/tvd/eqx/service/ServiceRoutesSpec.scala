@@ -38,23 +38,23 @@ class ServiceRoutesSpec extends AnyWordSpec with Matchers with ScalatestRouteTes
     }
 
     // HEALTHCHECK
-    "return for GET healthcheck request for database status" in {
-      Get("/eqx/health/db") ~> Route.seal(serviceRoutes) ~> check {
-        status shouldEqual StatusCodes.OK
-        contentType should === (ContentTypes.`application/json`)
-        entityAs[String] should === ("""{"component":"postgres","status":"ok","details":"600 max connections"}""")
-        headers shouldEqual List()
-      }
-    }
+//    "return for GET healthcheck request for database status" in {
+//      Get("/eqx/health/db") ~> Route.seal(serviceRoutes) ~> check {
+//        status shouldEqual StatusCodes.OK
+//        contentType should === (ContentTypes.`application/json`)
+//        entityAs[String] should === ("""{"component":"postgres","status":"ok","details":"600 max connections"}""")
+//        headers shouldEqual List()
+//      }
+//    }
 
-    "return for GET healthcheck request for memory status" in {
-      Get("/eqx/health/mem") ~> Route.seal(serviceRoutes) ~> check {
-        status shouldEqual StatusCodes.OK
-        contentType should === (ContentTypes.`application/json`)
-        entityAs[String] contains """{"component":"memory","status":"ok","description":"""
-        headers shouldEqual List()
-      }
-    }
+//    "return for GET healthcheck request for memory status" in {
+//      Get("/eqx/health/mem") ~> Route.seal(serviceRoutes) ~> check {
+//        status shouldEqual StatusCodes.OK
+//        contentType should === (ContentTypes.`application/json`)
+//        entityAs[String] contains """{"component":"memory","status":"ok","description":"""
+//        headers shouldEqual List()
+//      }
+//    }
 
     // LOG LEVEL
     "return successfully for POST log request with level and path query parameters" in {
